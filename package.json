@@ -1,0 +1,16 @@
+{
+  "name": "cs360-inclasslab",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "test": "jest"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "dependencies": {
+    "cs360-inclasslab": "file:",
+    "jest": "^29.7.0"
+  }
+}
