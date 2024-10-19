@@ -5,9 +5,6 @@ describe("simple arithmetic", () => {
     it("expect 5 + 3 = 8", async () => {
       expect(math.add(5, 3)).toBe(8);
     });
-    it("expect 1 + 1 = 11", async () => {
-      expect(math.add(1, 1)).toBe(11);
-    });
   });
   describe("subtract", () => {
     it("expect 5 - 1 = 4", async () => {
