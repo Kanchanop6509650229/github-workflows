@@ -10,7 +10,7 @@ jobs:
   build:
     strategy:
       matrix:
-        os: [ubuntu-latest, debian-latest, centos-latest]
+        os: [ubuntu-latest, macos-latest]
         node-version: [18.x, 20.x, 22.x]
 
     runs-on: ${{ matrix.os }}
