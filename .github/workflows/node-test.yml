@@ -23,13 +23,7 @@ jobs:
         node-version: ${{ matrix.node-version }}
         cache: 'npm'
     - name: Install dependencies
-      run: |
-        if [ "${{ matrix.os }}" == "ubuntu-latest" ] || [ "${{ matrix.os }}" == "debian-latest" ]; then
-          npm ci
-        elif [ "${{ matrix.os }}" == "centos-latest" ]; then
-          yum install -y npm
-          npm ci
-        fi
+      run: npm ci
     - name: Build
       run: npm run build --if-present
     - name: Run tests
