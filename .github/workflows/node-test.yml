@@ -10,11 +10,11 @@ jobs:
   test:
     strategy:
       matrix:
-        os: [ubuntu-latest, macos-latest]
+        os: [ubuntu-latest, debian-latest, centos-latest]
         node-version: [18.x, 20.x, 22.x]
 
-    runs-on: ${{ matrix.os }}
-
+    runs-on: self-hosted-${{ matrix.os }}
+    
     steps:
     - uses: actions/checkout@v4
     - name: Use Node.js ${{ matrix.node-version }}
@@ -24,7 +24,7 @@ jobs:
         cache: 'npm'
     - name: Install dependencies
       run: npm ci
-    - name: Build
+    - name: Build  
       run: npm run build --if-present
     - name: Run tests
       run: npm test
