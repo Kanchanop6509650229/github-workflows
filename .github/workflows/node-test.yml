@@ -3,7 +3,6 @@ name: Node.js CI
 on:
   push:
     branches: [ Kanchanop6509650229-patch-2 ]
-
   pull_request:
     branches: [ main ]
 
@@ -11,15 +10,9 @@ jobs:
   test:
     strategy:
       matrix:
-
         os: [ubuntu, debian, redhat]
         node-version: [18.x, 20.x, 22.x]
     
-
-        os: [ubuntu-latest, debian-latest, centos-latest]
-        node-version: [18.x, 20.x, 22.x]
-
-
     runs-on: self-hosted-${{ matrix.os }}
     
     steps:
@@ -29,7 +22,6 @@ jobs:
       uses: actions/setup-node@v4
       with:
         node-version: ${{ matrix.node-version }}
-
     
     - name: Install dependencies
       run: |
@@ -40,13 +32,4 @@ jobs:
       run: npm run build --if-present
     
     - name: Test
-        cache: 'npm'
-        
-    - name: Install dependencies
-      run: npm ci
-      
-    - name: Build  
-      run: npm run build --if-present
-      
-    - name: Run tests
       run: npm test
