@@ -25,6 +25,7 @@ jobs:
     
     - name: Install dependencies
       run: |
+        npm install -g jest
         npm install
     
     - name: Build
