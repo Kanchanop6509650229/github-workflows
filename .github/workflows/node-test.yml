@@ -10,7 +10,7 @@ jobs:
   test:
     strategy:
       matrix:
-        os: [ubuntu, debian, centos]
+        os: [ubuntu, debian, redhat]
         node-version: [18.x, 20.x, 22.x]
     
     runs-on: self-hosted-${{ matrix.os }}
