@@ -20,5 +20,7 @@ RUN npm install -g jest && \
 # Copy project files
 COPY . .
 
+EXPOSE 3000
+
 # Run tests as default command
-CMD ["npm", "test"]
+CMD ["npm", "test" , "node", "index.js" ]
