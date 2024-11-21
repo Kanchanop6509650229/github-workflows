@@ -1,4 +1,4 @@
-# Use Node.js LTS (Long Term Support) as base image
+# Use Node.js LTS as base image
 FROM node:20-slim
 
 # Set working directory
@@ -20,7 +20,8 @@ RUN npm install -g jest && \
 # Copy project files
 COPY . .
 
-EXPOSE 3000
+# Run both tests and start the application
+CMD ["sh", "-c", "npm test && node index.js"]
 
-# Run tests as default command
-CMD ["npm", "test" , "node", "index.js" ]
+# Expose any necessary ports
+EXPOSE 3000
