@@ -47,8 +47,8 @@ jobs:
 
       - name: Pull and Run Docker Image
         run: |
-          docker pull ${{ secrets.DOCKER_USERNAME }}/calc_workflows:latest
-          docker run -d --name test-container ${{ secrets.DOCKER_USERNAME }}/calc_workflows:latest
+          docker pull ${{ secrets.DOCKERHUB_USERNAME }}/calc_workflows:latest
+          docker run -d --name test-container ${{ secrets.DOCKERHUB_USERNAME }}/calc_workflows:latest
 
       - name: Run Automated Tests in Docker Container
         run: |
