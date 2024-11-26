@@ -10,7 +10,7 @@ on:
       - main
 
 jobs:
-  build-and-deploy:
+  build-docker:
     runs-on: ubuntu-latest
     strategy:
       matrix:
@@ -33,22 +33,28 @@ jobs:
           push: true
           tags: ${{ secrets.DOCKERHUB_USERNAME }}/calc_workflows:latest
 
-      - name: Configure AWS credentials
-        uses: aws-actions/configure-aws-credentials@v4
-        with:
-          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws-session-token: ${{ secrets.AWS_SESSION_TOKEN }}
-          aws-region: ${{ secrets.AWS_REGION }}
+      # Step 3: Test Docker Image
+  test-docker-image:
+    needs: build-docker
+    runs-on: ubuntu-latest
 
-      - name: Deploy to EC2
-        env:
-          KEY_PAIR_NAME: ${{ secrets.AWS_KEYPAIR_NAME }}
-          SECGROUP_ID: ${{ secrets.AWS_SECGROUP_ID }}
+    steps:
+      - name: Log in to DockerHub
+        uses: docker/login-action@v2
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_TOKEN }} # Use the token here
+
+      - name: Pull and Run Docker Image
         run: |
-          aws ec2 run-instances \
-            --image-id ami-04902260ca3d33422 \
-            --instance-type t2.micro \
-            --key-name $KEY_PAIR_NAME \
-            --security-group-ids $SECGROUP_ID \
-            --user-data file://script/user_data_script.txt
+          docker pull ${{ secrets.DOCKER_USERNAME }}/calc_workflows:latest
+          docker run -d --name test-container ${{ secrets.DOCKER_USERNAME }}/calc_workflows:latest
+
+      - name: Run Automated Tests in Docker Container
+        run: |
+          docker exec test-container npm test 
+
+      - name: Clean Up Docker Container
+        run: |
+          docker stop test-container
+          docker rm test-container
