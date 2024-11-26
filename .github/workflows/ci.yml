@@ -3,12 +3,14 @@ name: CI - Test Source Code and Docker Image
 on:
   push:
     branches:
-      - main , Kanchanop6509650229-patch-2
+      - main
+      - Kanchanop6509650229-patch-2
     paths-ignore:
       - 'README.md'
   pull_request:
     branches:
-      - main , Kanchanop6509650229-patch-2
+      - main
+      - Kanchanop6509650229-patch-2
     paths-ignore:
       - 'README.md'
 #  workflow_dispatch:
