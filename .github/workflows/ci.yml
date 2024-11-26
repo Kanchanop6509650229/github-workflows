@@ -13,76 +13,72 @@ on:
       - Kanchanop6509650229-patch-2
     paths-ignore:
       - 'README.md'
-#  workflow_dispatch:
 
 jobs:
-  # Step 1: Test Source Code
   test-source-code:
     runs-on: ubuntu-latest
-
     strategy:
       matrix:
         node-version: [14, 16, 18]
-
     steps:
       - name: Checkout Code
         uses: actions/checkout@v3
-
+        
       - name: Set up Node.js
         uses: actions/setup-node@v3
         with:
           node-version: ${{ matrix.node-version }}
-
+          
       - name: Install Dependencies
-        run: npm install
+        run: |
+          npm ci
+          npm install -g jest
+          
+      - name: Run Jest Tests
+        run: |
+          chmod +x node_modules/.bin/jest
+          npm test
 
-      - name: Run Jest Tests 
-        run: npm test
-
-  # Step 2: Build Docker Image
   build-docker:
     needs: test-source-code
     runs-on: ubuntu-latest
-
     steps:
       - name: Checkout Code
         uses: actions/checkout@v3
-
+        
       - name: Log in to DockerHub
         uses: docker/login-action@v2
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
-          password: ${{ secrets.DOCKERHUB_TOKEN }} # Use the token here
-
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+          
       - name: Build Docker Image
         run: |
           docker build -t ${{ secrets.DOCKERHUB_USERNAME }}/calc_workflows:latest .
-
+          
       - name: Push Docker Image to DockerHub
         run: |
           docker push ${{ secrets.DOCKERHUB_USERNAME }}/calc_workflows:latest
 
-  # Step 3: Test Docker Image
   test-docker-image:
     needs: build-docker
     runs-on: ubuntu-latest
-
     steps:
       - name: Log in to DockerHub
         uses: docker/login-action@v2
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
-          password: ${{ secrets.DOCKERHUB_TOKEN }} # Use the token here
-
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+          
       - name: Pull and Run Docker Image
         run: |
           docker pull ${{ secrets.DOCKERHUB_USERNAME }}/calc_workflows:latest
           docker run -d --name test-container ${{ secrets.DOCKERHUB_USERNAME }}/calc_workflows:latest
-
+          
       - name: Run Automated Tests in Docker Container
         run: |
-          docker exec test-container npm test 
-
+          docker exec test-container sh -c "chmod +x node_modules/.bin/jest && npm test"
+          
       - name: Clean Up Docker Container
         run: |
           docker stop test-container
